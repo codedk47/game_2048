@@ -67,47 +67,57 @@ static int rect_random_coord_num(GAMERECT *rect)
 	return coord;
 }
 //递归合并
-static void rect_merge(GAMERECT *rect, BYTE index, BYTE to, UINT64 *move_count)
+static void rect_merge(GAMERECT *rect, BYTE index, BYTE to)
 {
 	USHORT num = rect->arr[index];
 	BYTE move = rect->to[index][to];
 	if (num && move != 255)
 	{
 		USHORT dst = rect->arr[move];
-		if (dst == num || dst == 0)
+		if (dst == 0 || (dst == num && rect->rc[move]))
 		{
 			rect->arr[move] += num;
 			rect->arr[index] = 0;
-			*move_count += 1;
+			rect->move_count += 1;
 			if (dst == 0)
 			{
-				rect_merge(rect, move, to, move_count);
+				rect->game_score += 1;
+				rect_merge(rect, move, to);
+			}
+			else
+			{
+				rect->game_score += num;
+				rect->rc[move] = 0;
 			}
 		}
 	}
 }
 //顺向
-static UINT64 rect_each0_callback(GAMERECT *rect, BYTE to)
+static UINT rect_each0_callback(GAMERECT *rect, BYTE to)
 {
-	UINT64 move_count = 0;
+	rect->move_count = 0;
+	memset(rect->rc, 1, sizeof(rect->rc));
 	for (BYTE i = 0;i < rect->size;++i)
 	{
-		rect_merge(rect, i, to, &move_count);
+		rect_merge(rect, i, to);
 	}
-	return move_count;
+	rect->move_total += rect->move_count;
+	return rect->move_count;
 }
 //逆向
-static UINT64 rect_each1_callback(GAMERECT *rect, BYTE to)
+static UINT rect_each1_callback(GAMERECT *rect, BYTE to)
 {
-	UINT64 move_count = 0;
+	rect->move_count = 0;
+	memset(rect->rc, 1, sizeof(rect->rc));
 	for (BYTE i = rect->size;--i != 255;)
 	{
-		rect_merge(rect, i, to, &move_count);
+		rect_merge(rect, i, to);
 	}
-	return move_count;
+	rect->move_total += rect->move_count;
+	return rect->move_count;
 }
 //移动操作控制
-static int rect_move_callback(GAMERECT *rect, BYTE to, UINT64(*each)(GAMERECT *rect, BYTE to))
+static int rect_move_callback(GAMERECT *rect, BYTE to, UINT(*each)(GAMERECT *rect, BYTE to))
 {
 	if (each(rect, to))
 	{
@@ -162,6 +172,7 @@ void rect_display(GAMERECT *rect)
 	pos.X = 0;
 	pos.Y = 0;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	printf("Game score:%8d\nMove total:%8d\nMove count:%8d\n\n", rect->game_score, rect->move_total, rect->move_count);
 	for (BYTE i = 0;i < rect->size;++i)
 	{
 		printf("%4d%s", rect->arr[i], i % rect->width == rect->width - 1 ? "\n\n" : " ");

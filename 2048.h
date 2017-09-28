@@ -4,13 +4,15 @@
 #include "wincrypt.h"
 //游戏矩阵数据结构
 typedef struct gamerect_t {
-	USHORT arr[256];
+	USHORT arr[225];
 	USHORT win;
 	BYTE width;
 	BYTE size;
-	BYTE rc[256];
-	UINT score;
-	BYTE to[256][4];
+	BYTE rc[225];
+	BYTE to[225][4];
+	UINT game_score;
+	UINT move_total;
+	UINT move_count;
 } GAMERECT;
 
 void rect_init(GAMERECT *rect, BYTE width, USHORT win);

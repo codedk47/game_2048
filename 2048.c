@@ -29,8 +29,8 @@ void rect_init(GAMERECT *rect, BYTE width, USHORT win)
 		//	i % rect->width == rect->width - 1 ? "\n" : " "
 		//);
 	}
-	rect_random_ushort(rect);
-	rect_random_ushort(rect);
+	rect_random_coord_num(rect);
+	rect_random_coord_num(rect);
 	rect->win = win;
 }
 //获得一个随机字节
@@ -57,7 +57,7 @@ static int rect_random_coord(GAMERECT *rect)
 	return index > 0 ? rect->rc[rect_random_byte() % index] : -1;
 }
 //在坐标随机位置生成一个2或者4，2比4几率大一点
-static int rect_random_ushort(GAMERECT *rect)
+static int rect_random_coord_num(GAMERECT *rect)
 {
 	int coord = rect_random_coord(rect);
 	if (coord != -1)
@@ -118,7 +118,7 @@ static int rect_move_callback(GAMERECT *rect, BYTE to, UINT64(*each)(GAMERECT *r
 				return 1;
 			}
 		}
-		rect_random_ushort(rect);
+		rect_random_coord_num(rect);
 		return 0;
 	}
 	if (rect_random_coord(rect) != -1)

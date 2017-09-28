@@ -1,19 +1,4 @@
-
-//By ZERONETA
-
-#include "stdio.h"
-#include "windows.h"
-#include "wincrypt.h"
-//游戏矩阵数据结构
-typedef struct gamerect_t {
-	USHORT arr[256];
-	USHORT win;
-	BYTE width;
-	BYTE size;
-	BYTE rc[256];
-	UINT score;
-	BYTE to[256][4];
-} GAMERECT;
+#include "2048.h"
 //初始化矩阵大小
 void rect_init(GAMERECT *rect, BYTE width, USHORT win)
 {
@@ -77,8 +62,7 @@ static int rect_random_ushort(GAMERECT *rect)
 	int coord = rect_random_coord(rect);
 	if (coord != -1)
 	{
-		BYTE random = rect_random_byte();
-		rect->arr[coord] = random > 150 ? 4 : 2;
+		rect->arr[coord] = rect_random_byte() > 150 ? 4 : 2;
 	}
 	return coord;
 }

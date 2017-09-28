@@ -129,7 +129,6 @@ static int rect_move_callback(GAMERECT *rect, BYTE to, UINT(*each)(GAMERECT *rec
 			}
 		}
 		rect_random_coord_num(rect);
-		return 0;
 	}
 	if (rect_random_coord(rect) != -1)
 	{

@@ -164,7 +164,7 @@ void rect_display(GAMERECT *rect)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 	for (BYTE i = 0;i < rect->size;++i)
 	{
-		printf("% 4d%s", rect->arr[i], i % rect->width == rect->width - 1 ? "\n\n" : " ");
+		printf("%4d%s", rect->arr[i], i % rect->width == rect->width - 1 ? "\n\n" : " ");
 	}
 }
 
